@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Learn2Trade",
+    "slug": "Learn2Trade",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#3B4148"
+    },
+    "ios": {
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.goldenbee.Learn2Trade",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "This app may use the camera for profile picture selection."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#004242"
+      },
+      "package": "com.goldenbee.Learn2Trade",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5f1de71a-d5be-4926-9699-fc6d172df893"
+      }
+    }
+  }
+}
