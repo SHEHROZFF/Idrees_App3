@@ -19,10 +19,6 @@ const enrollmentRoutes = require('./routes/enrollmentRoutes');
 const policiesRoutes = require('./routes/policiesRoutes');
 const configRoutes = require('./routes/config');
 
-const path = require('path');
-
-
-
 
 // const stripe = require('stripe')('sk_test_51OXlAIAZK57wNYnQQluuPOe6YHwpKCs2dZfKLaEe7Ye67OObYR3Hes3i0Vjo1yp450mlVWQ9ufvWWYYymF1mc33R00GwSCgwFi');
 
@@ -42,8 +38,6 @@ app.use(cors());
 
 // Set security HTTP headers
 app.use(helmet());
-
-app.use('/uploads/pdfs', express.static(path.join(__dirname, 'uploads', 'pdfs')));
 
 // HTTP request logger
 if (process.env.NODE_ENV === 'development') {

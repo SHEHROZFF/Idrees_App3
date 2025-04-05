@@ -1,18 +1,14 @@
-// models/Ad.js
 const mongoose = require('mongoose');
 
-const adSchema = new mongoose.Schema(
+const adSchema = mongoose.Schema(
   {
-    // We'll store Ad image as Cloudinary references:
-    image: {
-      public_id: { type: String, default: '' },
-      url: { type: String, required: true },
-    },
+    image: { type: String, required: true },
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
     description: { type: String },
     link: { type: String },
     category: { type: String, required: true },
+    // Template for design selection
     templateId: {
       type: String,
       required: true,
@@ -26,94 +22,36 @@ const adSchema = new mongoose.Schema(
     ctaText: { type: String },
     priority: { type: Number, default: 0 },
     cardDesign: { type: String, default: 'basic' },
-
-    promoCode: { type: String },
-    limitedOffer: { type: Boolean, default: false },
-    instructor: { type: String },
-    courseInfo: { type: String },
-    rating: { type: Number },
-    originalPrice: { type: Number },
-    salePrice: { type: Number },
-    discountPercentage: { type: Number },
-    saleEnds: { type: Date },
-    eventDate: { type: Date },
-    eventLocation: { type: String },
+    // Additional fields for specific templates
+    promoCode: { type: String },             // For promo ads
+    limitedOffer: { type: Boolean },           // For promo ads
+    instructor: { type: String },              // For newCourse ads
+    courseInfo: { type: String },              // For newCourse ads
+    rating: { type: Number },                  // For newCourse ads
+    originalPrice: { type: Number },           // For sale ads
+    salePrice: { type: Number },               // For sale ads
+    discountPercentage: { type: Number },      // For sale ads
+    saleEnds: { type: Date },                  // For sale ads
+    eventDate: { type: Date },                 // For event ads
+    eventLocation: { type: String },           // For event ads
+    // Optional custom style overrides
     customStyles: { type: Object },
 
+    // Add more fields as needed
     adProdtype: {
       type: String,
+      // required: true,
       enum: ['Product', 'Course'],
       default: 'Product',
     },
-    adProdId: { type: String },
+    adProdId: {
+      type: String,
+    }
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model('Ad', adSchema);
-
-
-
-
-
-
-
-
-
-// const mongoose = require('mongoose');
-
-// const adSchema = mongoose.Schema(
-//   {
-//     image: { type: String, required: true },
-//     title: { type: String, required: true },
-//     subtitle: { type: String, required: true },
-//     description: { type: String },
-//     link: { type: String },
-//     category: { type: String, required: true },
-//     // Template for design selection
-//     templateId: {
-//       type: String,
-//       required: true,
-//       enum: ['promo', 'newCourse', 'sale', 'event'],
-//       default: 'newCourse',
-//     },
-//     price: { type: Number },
-//     startDate: { type: Date },
-//     endDate: { type: Date },
-//     targetAudience: { type: String },
-//     ctaText: { type: String },
-//     priority: { type: Number, default: 0 },
-//     cardDesign: { type: String, default: 'basic' },
-//     // Additional fields for specific templates
-//     promoCode: { type: String },             // For promo ads
-//     limitedOffer: { type: Boolean },           // For promo ads
-//     instructor: { type: String },              // For newCourse ads
-//     courseInfo: { type: String },              // For newCourse ads
-//     rating: { type: Number },                  // For newCourse ads
-//     originalPrice: { type: Number },           // For sale ads
-//     salePrice: { type: Number },               // For sale ads
-//     discountPercentage: { type: Number },      // For sale ads
-//     saleEnds: { type: Date },                  // For sale ads
-//     eventDate: { type: Date },                 // For event ads
-//     eventLocation: { type: String },           // For event ads
-//     // Optional custom style overrides
-//     customStyles: { type: Object },
-
-//     // Add more fields as needed
-//     adProdtype: {
-//       type: String,
-//       // required: true,
-//       enum: ['Product', 'Course'],
-//       default: 'Product',
-//     },
-//     adProdId: {
-//       type: String,
-//     }
-//   },
-//   { timestamps: true }
-// );
-
-// module.exports = mongoose.model('Ad', adSchema);
 
 
 

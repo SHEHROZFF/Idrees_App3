@@ -1,5 +1,4 @@
 // models/Course.js
-
 const mongoose = require('mongoose');
 
 const courseSchema = mongoose.Schema(
@@ -21,21 +20,20 @@ const courseSchema = mongoose.Schema(
       required: [true, 'Please add a price.'],
       min: [0, 'Price must be a positive number.'],
     },
-
-    // Cloudinary-based image:
     image: {
-      public_id: { type: String, default: '' },
-      url: { type: String, default: '' },
+      type: String,
+      required: [true, 'Please add an image URL.'],
+      match: [
+        /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg|webp))$/i,
+        'Please enter a valid image URL.',
+      ],
     },
-
-    // All videos for this course:
     videos: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Video',
       },
     ],
-
     rating: {
       type: Number,
       default: 0,
@@ -48,13 +46,14 @@ const courseSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
-    // Short video for featured courses
     shortVideoLink: {
-      public_id: { type: String, default: '' },
-      url: { type: String, default: '' },
+      type: String,
+      default: '',
+      match: [
+        /^(https?:\/\/.*\.(?:mp4|webm|ogg))$/i,
+        'Please enter a valid video URL.',
+      ],
     },
-
     difficultyLevel: {
       type: String,
       enum: ['Beginner', 'Intermediate', 'Advanced'],
@@ -106,8 +105,9 @@ const courseSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-// Example: Pre-deleteOne hook to remove related reviews if needed
+// Pre deleteOne hook to cascade deletion of reviews (if needed)
 courseSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  console.log(`Cascade delete: Removing reviews for course ${this._id}`);
   await this.model('Review').deleteMany({
     reviewable: this._id,
     reviewableModel: 'Course',
@@ -115,10 +115,12 @@ courseSchema.pre('deleteOne', { document: true, query: false }, async function (
   next();
 });
 
-// Example static method to recalc aggregated rating
+// Static method to calculate aggregated ratings remains the same
 courseSchema.statics.calculateRatings = async function (courseId) {
   const Review = mongoose.model('Review');
   const courseObjectId = new mongoose.Types.ObjectId(courseId);
+
+  console.log('Calculating ratings for course:', courseId);
 
   const result = await Review.aggregate([
     {
@@ -136,6 +138,8 @@ courseSchema.statics.calculateRatings = async function (courseId) {
     },
   ]);
 
+  console.log('Aggregation result for course:', result);
+
   if (result.length > 0) {
     await this.findByIdAndUpdate(courseId, {
       rating: result[0].averageRating,
@@ -149,173 +153,8 @@ courseSchema.statics.calculateRatings = async function (courseId) {
   }
 };
 
-module.exports = mongoose.model('Course', courseSchema);
-
-
-
-
-
-
-
-
-
-// // models/Course.js
-// const mongoose = require('mongoose');
-
-// const courseSchema = mongoose.Schema(
-//   {
-//     title: {
-//       type: String,
-//       required: [true, 'Please add a course title.'],
-//     },
-//     description: {
-//       type: String,
-//       required: [true, 'Please add a course description.'],
-//     },
-//     instructor: {
-//       type: String,
-//       required: [true, 'Please add an instructor name.'],
-//     },
-//     price: {
-//       type: Number,
-//       required: [true, 'Please add a price.'],
-//       min: [0, 'Price must be a positive number.'],
-//     },
-//     image: {
-//       type: String,
-//       required: [true, 'Please add an image URL.'],
-//       match: [
-//         /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg|webp))$/i,
-//         'Please enter a valid image URL.',
-//       ],
-//     },
-//     videos: [
-//       {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'Video',
-//       },
-//     ],
-//     rating: {
-//       type: Number,
-//       default: 0,
-//     },
-//     reviews: {
-//       type: Number,
-//       default: 0,
-//     },
-//     isFeatured: {
-//       type: Boolean,
-//       default: false,
-//     },
-//     shortVideoLink: {
-//       type: String,
-//       default: '',
-//       match: [
-//         /^(https?:\/\/.*\.(?:mp4|webm|ogg))$/i,
-//         'Please enter a valid video URL.',
-//       ],
-//     },
-//     difficultyLevel: {
-//       type: String,
-//       enum: ['Beginner', 'Intermediate', 'Advanced'],
-//       default: 'Beginner',
-//     },
-//     language: {
-//       type: String,
-//       default: 'English',
-//     },
-//     topics: {
-//       type: [String],
-//       default: [],
-//     },
-//     totalDuration: {
-//       type: Number,
-//       default: 0,
-//     },
-//     numberOfLectures: {
-//       type: Number,
-//       default: 0,
-//     },
-//     category: {
-//       type: String,
-//       default: '',
-//     },
-//     tags: {
-//       type: [String],
-//       default: [],
-//     },
-//     requirements: {
-//       type: [String],
-//       default: [],
-//     },
-//     whatYouWillLearn: {
-//       type: [String],
-//       default: [],
-//     },
-//     saleEnabled: {
-//       type: Boolean,
-//       required: true,
-//       default: false,
-//     },
-//     salePrice: {
-//       type: Number,
-//       required: false,
-//       min: [0, 'Sale price must be a positive number.'],
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// // Pre deleteOne hook to cascade deletion of reviews (if needed)
-// courseSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
-//   console.log(`Cascade delete: Removing reviews for course ${this._id}`);
-//   await this.model('Review').deleteMany({
-//     reviewable: this._id,
-//     reviewableModel: 'Course',
-//   });
-//   next();
-// });
-
-// // Static method to calculate aggregated ratings remains the same
-// courseSchema.statics.calculateRatings = async function (courseId) {
-//   const Review = mongoose.model('Review');
-//   const courseObjectId = new mongoose.Types.ObjectId(courseId);
-
-//   console.log('Calculating ratings for course:', courseId);
-
-//   const result = await Review.aggregate([
-//     {
-//       $match: {
-//         reviewable: courseObjectId,
-//         reviewableModel: 'Course',
-//       },
-//     },
-//     {
-//       $group: {
-//         _id: '$reviewable',
-//         averageRating: { $avg: '$rating' },
-//         totalReviews: { $sum: 1 },
-//       },
-//     },
-//   ]);
-
-//   console.log('Aggregation result for course:', result);
-
-//   if (result.length > 0) {
-//     await this.findByIdAndUpdate(courseId, {
-//       rating: result[0].averageRating,
-//       reviews: result[0].totalReviews,
-//     });
-//   } else {
-//     await this.findByIdAndUpdate(courseId, {
-//       rating: 0,
-//       reviews: 0,
-//     });
-//   }
-// };
-
-// const Course = mongoose.model('Course', courseSchema);
-// module.exports = Course;
+const Course = mongoose.model('Course', courseSchema);
+module.exports = Course;
 
 
 
