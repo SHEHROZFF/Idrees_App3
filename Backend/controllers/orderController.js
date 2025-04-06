@@ -93,7 +93,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
   // Populate the 'product' field in orderItems to include 'pdfLink'
   const populatedOrder = await createdOrder.populate({
     path: 'orderItems.product',
-    select: 'pdfLink', // Select the pdfLink field
+    select: 'pdfFullUrl', // Select the pdfLink field
   });
 
   res.status(201).json(populatedOrder);
@@ -108,7 +108,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id })
     .populate({
       path: 'orderItems.product',
-      select: 'pdfLink', // Include pdfLink in each orderItem's product
+      select: 'pdfFullUrl', // Include pdfLink in each orderItem's product
     })
     .sort({ createdAt: -1 });
   res.json(orders);
@@ -124,7 +124,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
     .populate('user')
     .populate({
       path: 'orderItems.product',
-      select: 'pdfLink', // Include pdfLink in each orderItem's product
+      select: 'pdfFullUrl', // Include pdfLink in each orderItem's product
     })
     .sort({ createdAt: -1 });
     console.log(orders);
