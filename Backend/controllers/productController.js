@@ -2,6 +2,7 @@
 
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product');
+const Order = require('../models/Order');
 const cloudinary = require('../config/cloudinary');
 const fs = require('fs');
 const path = require('path');
