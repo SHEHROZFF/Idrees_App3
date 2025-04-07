@@ -276,8 +276,14 @@ exports.streamPDF = asyncHandler(async (req, res) => {
   if (!localPath) {
     return res.status(404).json({ error: 'No PDF path found for this product' });
   }
+  // console.log(localPath);
+  
 
-  const filePath = path.join(__dirname, '..', '..', localPath);
+  const filePath = path.join(__dirname,'..', localPath);
+  console.log(filePath);
+  console.log(__dirname);
+  
+  
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: 'PDF file not found on server' });
   }
