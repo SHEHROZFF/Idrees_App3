@@ -9,6 +9,7 @@ const {
   updateProduct,
   deleteProduct,
   getProductById,
+  streamPDF
 } = require('../controllers/productController');
 
 const { protect, authorize } = require('../middleware/authMiddleware');
