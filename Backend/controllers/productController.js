@@ -241,8 +241,54 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
     message: 'Product/Exam removed',
     data: { _id: productId },
   });
+  
 });
 
+
+/**
+ * @desc Stream PDF if user purchased the product
+ * @route GET /api/products/stream-pdf/:productId
+ * @access Private (requires protect middleware)
+ */
+exports.streamPDF = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { productId } = req.params;
+
+  // 1) Find product
+  const product = await Product.findById(productId);
+  if (!product) {
+    return res.status(404).json({ error: 'Product not found' });
+  }
+
+  // 2) Check if user has purchased
+  const hasPurchased = await Order.findOne({
+    user: userId,
+    'orderItems.product': productId, 
+  });
+  if (!hasPurchased) {
+    return res.status(403).json({ error: 'You have not purchased this product' });
+  }
+
+  // 3) We have product.pdfLocalPath - the local path on the server
+  // e.g. "/uploads/pdfs/1743818593818-Wusle_Audit (2).pdf"
+  const localPath = product.pdfLocalPath; 
+  if (!localPath) {
+    return res.status(404).json({ error: 'No PDF path found for this product' });
+  }
+
+  const filePath = path.join(__dirname, '..', '..', localPath);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'PDF file not found on server' });
+  }
+
+  // 4) Stream
+  res.setHeader('Content-Type', 'application/pdf');
+  // optional inline content-disposition:
+  // res.setHeader('Content-Disposition', 'inline; filename="myfile.pdf"');
+
+  const fileStream = fs.createReadStream(filePath);
+  fileStream.pipe(res);
+});
 
 
 

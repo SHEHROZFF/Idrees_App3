@@ -38,6 +38,9 @@ router
   )
   .delete(protect, authorize('admin'), deleteProduct);
 
+// NEW route for streaming PDF
+router.get('/stream-pdf/:productId', protect, streamPDF);
+
 module.exports = router;
 
 
