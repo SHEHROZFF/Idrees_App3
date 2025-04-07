@@ -290,11 +290,11 @@ exports.streamPDF = asyncHandler(async (req, res) => {
 
   // 4) Stream
   res.setHeader('Content-Type', 'application/pdf');
-  // optional inline content-disposition:
-  // res.setHeader('Content-Disposition', 'inline; filename="myfile.pdf"');
+  res.setHeader('Content-Disposition', 'inline; filename="secure-view.pdf"');
 
   const fileStream = fs.createReadStream(filePath);
   fileStream.pipe(res);
+;
 });
 
 
